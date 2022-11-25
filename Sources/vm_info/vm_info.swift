@@ -60,6 +60,10 @@ public struct vm_info {
         
         formatter.allowedUnits = .useAll
         
+        var swap = xsw_usage()
+        var size = MemoryLayout<xsw_usage>.size
+        sysctlbyname("vm.swapusage", &swap, &size, nil, 0)
+        
         // Infomataion shown by Activity Monitor
         print("""
             Physical Memory:          \(fmt(physicalPages))
@@ -68,7 +72,7 @@ public struct vm_info {
               Wired Memory:           \(fmt(vm_stat.wire_count))
               Compressed:             \(fmt(vm_stat.compressor_page_count))
             Cached Files:             \(fmt(vm_stat.cached))
-            Swap Used:                \(fmt(vm_stat.swap))
+            Swap Used:                \(fmt(natural_t(swap.xsu_used / UInt64(pageSize))))
             """)
     }
 }
@@ -80,10 +84,6 @@ extension vm_statistics64_data_t {
     
     var cached: natural_t {
         purgeable_count + external_page_count
-    }
-    
-    var swap: natural_t {
-        natural_t(swapouts - swapins) // Not verified
     }
     
     var available: natural_t {
