@@ -64,7 +64,11 @@ public struct vm_info {
         var size = MemoryLayout<xsw_usage>.size
         sysctlbyname("vm.swapusage", &swap, &size, nil, 0)
         
-        // Infomataion shown by Activity Monitor
+        var pressure = Int()
+        size = MemoryLayout<Int>.size
+        sysctlbyname("kern.memorystatus_level", &pressure, &size, nil, 0)
+        
+        // Information shown by Activity Monitor
         print("""
             Physical Memory:          \(fmt(physicalPages))
             Memory Used:              \(fmt(physicalPages - vm_stat.available))
@@ -73,6 +77,8 @@ public struct vm_info {
               Compressed:             \(fmt(vm_stat.compressor_page_count))
             Cached Files:             \(fmt(vm_stat.cached))
             Swap Used:                \(fmt(natural_t(swap.xsu_used / UInt64(pageSize))))
+            
+            Memory Pressure:          \(pressure)%
             """)
     }
 }

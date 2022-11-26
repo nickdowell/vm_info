@@ -9,25 +9,27 @@ Sample output:
 
 ```
 Mach Virtual Memory Statistics:
-  Free:                   0.12 GB
-  Active (pageable):      2.22 GB
-  Inactive:               2.32 GB
-  Speculative:            0.14 GB
+  Free:                   0.06 GB
+  Active (pageable):      2.19 GB
+  Inactive:               2.16 GB
+  Speculative:            0.01 GB
   Throttled:              0.00 GB
-  Wired (not pageable):   2.02 GB
-  Purgeable:              0.13 GB
-  File-backed (non-swap): 2.07 GB
-  Anonymous:              2.61 GB
-  Stored in compressor:   9.17 GB
-  Used by compressor:     1.18 GB
+  Wired (not pageable):   1.92 GB
+  Purgeable:              0.05 GB
+  File-backed (non-swap): 1.64 GB
+  Anonymous:              2.73 GB
+  Stored in compressor:   10.45 GB
+  Used by compressor:     1.65 GB
 
 Physical Memory:          8.00 GB
-Memory Used:              5.81 GB
-  App Memory:             2.48 GB
-  Wired Memory:           2.02 GB
-  Compressed:             1.18 GB
-Cached Files:             2.20 GB
+Memory Used:              6.30 GB
+  App Memory:             2.68 GB
+  Wired Memory:           1.92 GB
+  Compressed:             1.65 GB
+Cached Files:             1.68 GB
 Swap Used:                3.06 GB
+
+Memory Pressure:          55%
 ```
 
 Build with `swift build` or build & run with `swift run`.
