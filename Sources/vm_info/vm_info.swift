@@ -60,13 +60,13 @@ public struct vm_info {
         
         formatter.allowedUnits = .useAll
         
-        var swap = xsw_usage()
+        var swapusage = xsw_usage()
         var size = MemoryLayout<xsw_usage>.size
-        sysctlbyname("vm.swapusage", &swap, &size, nil, 0)
+        sysctlbyname("vm.swapusage", &swapusage, &size, nil, 0)
         
-        var pressure = Int()
+        var memorystatus_level = Int()
         size = MemoryLayout<Int>.size
-        sysctlbyname("kern.memorystatus_level", &pressure, &size, nil, 0)
+        sysctlbyname("kern.memorystatus_level", &memorystatus_level, &size, nil, 0)
         
         // Information shown by Activity Monitor
         print("""
@@ -76,9 +76,9 @@ public struct vm_info {
               Wired Memory:           \(fmt(vm_stat.wire_count))
               Compressed:             \(fmt(vm_stat.compressor_page_count))
             Cached Files:             \(fmt(vm_stat.cached))
-            Swap Used:                \(fmt(natural_t(swap.xsu_used / UInt64(pageSize))))
+            Swap Used:                \(fmt(natural_t(swapusage.xsu_used / UInt64(pageSize))))
             
-            Memory Pressure:          \(pressure)%
+            Memory Pressure:          \(100 - memorystatus_level)%
             """)
     }
 }
