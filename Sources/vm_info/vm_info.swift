@@ -68,17 +68,16 @@ public struct vm_info {
         size = MemoryLayout<Int>.size
         sysctlbyname("kern.memorystatus_level", &memorystatus_level, &size, nil, 0)
         
-        // Information shown by Activity Monitor
         print("""
-            Physical Memory:          \(fmt(physicalPages))
-            Memory Used:              \(fmt(physicalPages - vm_stat.available))
-              App Memory:             \(fmt(vm_stat.app))
-              Wired Memory:           \(fmt(vm_stat.wire_count))
-              Compressed:             \(fmt(vm_stat.compressor_page_count))
-            Cached Files:             \(fmt(vm_stat.cached))
-            Swap Used:                \(fmt(natural_t(swapusage.xsu_used / UInt64(pageSize))))
-            
-            Memory Pressure:          \(100 - memorystatus_level)%
+            Activity Monitor:
+             Memory Pressure:         \(100 - memorystatus_level)%
+             Physical Memory:         \(fmt(physicalPages))
+             Memory Used:             \(fmt(physicalPages - vm_stat.available))
+               App Memory:            \(fmt(vm_stat.app))
+               Wired Memory:          \(fmt(vm_stat.wire_count))
+               Compressed:            \(fmt(vm_stat.compressor_page_count))
+             Cached Files:            \(fmt(vm_stat.cached))
+             Swap Used:               \(fmt(natural_t(swapusage.xsu_used / UInt64(pageSize))))
             """)
     }
 }
