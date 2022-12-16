@@ -79,6 +79,41 @@ public struct vm_info {
              Cached Files:            \(fmt(vm_stat.cached))
              Swap Used:               \(fmt(natural_t(swapusage.xsu_used / UInt64(pageSize))))
             """)
+        
+        // Sum all the 'MEM' values from `top`, which match the 'Memory' column in activity monitor.
+        // Fetching task_basic_info_64 for all processes, to do this programatically, would require
+        // the com.apple.system-task-ports.read entitlement. It's not currently possible to add
+        // entitlements to tools built with Swift Package Manager.
+        if #available(macOS 10.15.4, *) {
+            let pipe = Pipe()
+            let process = Process()
+            process.executableURL = URL(fileURLWithPath: "/usr/bin/top")
+            process.arguments = ["-l", "1", "-stats", "mem"]
+            process.standardOutput = pipe
+            try! process.run()
+            let stdout = try! pipe.fileHandleForReading.readToEnd()!
+            var rsizeTotal = UInt64(0)
+            var mem = false
+            for var line in String(data: stdout, encoding: .utf8)!.components(separatedBy: .newlines) {
+                line = line.trimmingCharacters(in: .whitespacesAndNewlines)
+                guard mem else {
+                    if line.hasPrefix("MEM") {
+                        mem = true
+                    }
+                    continue
+                }
+                if line.isEmpty { continue }
+                var num = UInt64(line.trimmingCharacters(in: .decimalDigits.inverted))!
+                if line.hasSuffix("M") { num *= 1024 * 1024 }
+                else if line.hasSuffix("K") { num *= 1024 }
+                else { preconditionFailure() }
+                rsizeTotal += num;
+            }
+            print("""
+                
+                Process Footprint:        \(fmt(natural_t(rsizeTotal / UInt64(pageSize))))
+                """)
+        }
     }
 }
 
